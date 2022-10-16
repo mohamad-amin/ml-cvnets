@@ -40,7 +40,7 @@ def get_configuration(opts) -> Dict:
     elif depth == 34:
         resnet_config["layer2"] = {
             "num_blocks": 3,
-            "mid_channels": 64,
+            "mid_channels": 128,
             "block_type": "basic",
             "stride": 1,
         }
@@ -52,13 +52,13 @@ def get_configuration(opts) -> Dict:
         }
         resnet_config["layer4"] = {
             "num_blocks": 6,
-            "mid_channels": 256,
+            "mid_channels": 128,
             "block_type": "basic",
             "stride": 2,
         }
         resnet_config["layer5"] = {
             "num_blocks": 3,
-            "mid_channels": 512,
+            "mid_channels": 128,
             "block_type": "basic",
             "stride": 2,
         }
