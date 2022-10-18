@@ -34,7 +34,7 @@ class HugeFCN(BaseEncoder):
         self.model_conf_dict = dict()
         self.model_conf_dict["linear1"] = {"in": image_channels, "out": dim}
 
-        self.conv_1 = Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1=patch_size, p2=patch_size),
+        self.conv_1 = Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1=patch_size, p2=patch_size)
 
         self.layer_1 = nn.Linear((patch_size ** 2) * image_channels, dim)
         self.layer_2 = nn.Sequential(LinearLayer(dim, dim), nn.ReLU())
@@ -44,7 +44,10 @@ class HugeFCN(BaseEncoder):
 
         self.conv_1x1_exp = Identity()
 
-        self.classifier = LinearLayer(in_features=dim, out_features=num_classes)
+        self.classifier = nn.Sequential(
+            Reduce('b n c -> b c', 'mean'),
+            LinearLayer(in_features=dim, out_features=num_classes)
+        )
 
         # check model
         self.check_model()
