@@ -10,6 +10,7 @@ from . import register_cls_models
 from .base_cls import BaseEncoder
 from .config.hugefcn import get_configuration
 from ...layers import ConvLayer, LinearLayer, GlobalPool, Identity
+from einops.layers.torch import Rearrange, Reduce
 
 
 @register_cls_models("hugefcn")
@@ -25,23 +26,17 @@ class HugeFCN(BaseEncoder):
         hugefcn_config = get_configuration(opts=opts)
         image_channels = hugefcn_config["general"]["img_channels"]
         dim = hugefcn_config["general"]["dim"]
+        patch_size = hugefcn_config["general"]["patch_size"]
 
         super().__init__(*args, **kwargs)
 
         # store model configuration in a dictionary
         self.model_conf_dict = dict()
-        self.conv_1 = ConvLayer(
-            opts=opts,
-            in_channels=image_channels,
-            out_channels=dim,
-            kernel_size=224,  # Todo: LMAO
-            stride=1,
-            use_norm=True,
-            use_act=True,
-        )
-        self.model_conf_dict["conv1"] = {"in": image_channels, "out": dim}
+        self.model_conf_dict["linear1"] = {"in": image_channels, "out": dim}
 
-        self.layer_1 = GlobalPool(pool_type=pool_type, keep_dim=False)
+        self.conv_1 = Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1=patch_size, p2=patch_size),
+
+        self.layer_1 = nn.Linear((patch_size ** 2) * image_channels, dim)
         self.layer_2 = nn.Sequential(LinearLayer(dim, dim), nn.ReLU())
         self.layer_3 = nn.Sequential(LinearLayer(dim, dim), nn.ReLU())
         self.layer_4 = nn.Sequential(LinearLayer(dim, dim), nn.ReLU())
