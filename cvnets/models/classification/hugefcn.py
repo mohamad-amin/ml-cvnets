@@ -12,7 +12,7 @@ from .config.hugefcn import get_configuration
 from ...layers import ConvLayer, LinearLayer, GlobalPool, Identity
 
 
-@register_cls_models("huge_fcn")
+@register_cls_models("hugefcn")
 class HugeFCN(BaseEncoder):
     """
     This class defines the HugeFCN architecture
@@ -34,11 +34,12 @@ class HugeFCN(BaseEncoder):
             opts=opts,
             in_channels=image_channels,
             out_channels=dim,
-            kernel_size=224,
+            kernel_size=224,  # Todo: LMAO
             stride=1,
             use_norm=True,
             use_act=True,
         )
+        self.model_conf_dict["conv1"] = {"in": image_channels, "out": dim}
 
         self.layer_1 = GlobalPool(pool_type=pool_type, keep_dim=False)
         self.layer_2 = nn.Sequential(LinearLayer(dim, dim), nn.ReLU())
