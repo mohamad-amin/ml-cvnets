@@ -13,6 +13,9 @@ def get_configuration(opts) -> Dict:
     resnet_config = dict()
 
     if depth == 18:
+        resnet_config["layer1"] = {
+            "input_channels": 64
+        }
         resnet_config["layer2"] = {
             "num_blocks": 2,
             "mid_channels": 64,
@@ -38,31 +41,37 @@ def get_configuration(opts) -> Dict:
             "stride": 2,
         }
     elif depth == 34:
+        resnet_config["layer1"] = {
+            "input_channels": 192
+        }
         resnet_config["layer2"] = {
             "num_blocks": 3,
-            "mid_channels": 256,
+            "mid_channels": 192,
             "block_type": "basic",
             "stride": 1,
         }
         resnet_config["layer3"] = {
             "num_blocks": 4,
-            "mid_channels": 256,
+            "mid_channels": 192,
             "block_type": "basic",
             "stride": 2,
         }
         resnet_config["layer4"] = {
             "num_blocks": 6,
-            "mid_channels": 256,
+            "mid_channels": 192,
             "block_type": "basic",
             "stride": 2,
         }
         resnet_config["layer5"] = {
             "num_blocks": 3,
-            "mid_channels": 256,
+            "mid_channels": 192,
             "block_type": "basic",
             "stride": 2,
         }
     elif depth == 50:
+        resnet_config["layer1"] = {
+            "input_channels": 64
+        }
         resnet_config["layer2"] = {
             "num_blocks": 3,
             "mid_channels": 64,
@@ -88,6 +97,9 @@ def get_configuration(opts) -> Dict:
             "stride": 2,
         }
     elif depth == 101:
+        resnet_config["layer1"] = {
+            "input_channels": 64
+        }
         resnet_config["layer2"] = {
             "num_blocks": 3,
             "mid_channels": 64,

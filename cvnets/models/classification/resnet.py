@@ -27,7 +27,6 @@ class ResNet(BaseEncoder):
 
     def __init__(self, opts, *args, **kwargs) -> None:
         image_channels = 3
-        input_channels = 256
         num_classes = getattr(opts, "model.classification.n_classes", 1000)
         classifier_dropout = getattr(
             opts, "model.classification.classifier_dropout", 0.2
@@ -38,6 +37,8 @@ class ResNet(BaseEncoder):
 
         super().__init__(*args, **kwargs)
         self.model_conf_dict = dict()
+
+        input_channels = cfg["layer1"]["input_channels"]
 
         self.conv_1 = ConvLayer(
             opts=opts,
