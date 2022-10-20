@@ -77,7 +77,7 @@ class ImagenetLMDBDataset(BaseImageDataset):
             title="".format(cls.__name__), description="".format(cls.__name__)
         )
         group.add_argument(
-            "--dataset.imagenet.crop-ratio",
+            "--dataset.imagenet_lmdb.crop-ratio",
             type=float,
             default=0.875,
             help="Crop ratio",
