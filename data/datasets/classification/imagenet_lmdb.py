@@ -42,9 +42,8 @@ class ImagenetLMDBDataset(BaseImageDataset):
             else getattr(opts, "dataset.root_val", None)
         )
         self.root_is_subdir = os.path.isdir(self.root)
+        self._open_env()
         self.env = None
-        self.length = -1
-        self.keys = []
 
         self.is_training = is_training
         self.is_evaluation = is_evaluation
