@@ -41,7 +41,10 @@ class ImagenetLMDBDataset(BaseImageDataset):
             if is_training
             else getattr(opts, "dataset.root_val", None)
         )
-        root = self.root
+        self.root_is_subdir = os.path.isdir(self.root)
+        self.env = None
+        self.length = -1
+        self.keys = []
 
         self.is_training = is_training
         self.is_evaluation = is_evaluation
@@ -63,11 +66,13 @@ class ImagenetLMDBDataset(BaseImageDataset):
         setattr(opts, "dataset.collate_fn_name_val", "imagenet_collate_fn")
         setattr(opts, "dataset.collate_fn_name_eval", "imagenet_collate_fn")
 
-        self.env = lmdb.open(root, subdir=os.path.isdir(root),
-                             readonly=True, lock=False, readahead=False, meminit=False)
-        with self.env.begin(write=False) as txn:
-            self.length = pickle.loads(txn.get(b'__len__'))
-            self.keys = pickle.loads(txn.get(b'__keys__'))
+    def _open_env(self):
+        if not hasattr(self, 'env') or self.env is None:
+            self.env = lmdb.open(self.root, subdir=self.root_is_subdir,
+                                 readonly=True, lock=False, readahead=False, meminit=False)
+            with self.env.begin(write=False) as txn:
+                self.length = pickle.loads(txn.get(b'__len__'))
+                self.keys = pickle.loads(txn.get(b'__keys__'))
 
     @classmethod
     def add_arguments(cls, parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -138,6 +143,7 @@ class ImagenetLMDBDataset(BaseImageDataset):
 
     def read_image_lmdb(self, index):
 
+        self._open_env()
         env = self.env
         with env.begin(write=False) as txn:
             byteflow = txn.get(self.keys[index])
