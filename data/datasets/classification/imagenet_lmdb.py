@@ -11,7 +11,6 @@ import lmdb
 import six
 import pyarrow as pa
 from PIL import Image
-from torch.utils import data
 import argparse
 
 from utils import logger
@@ -23,7 +22,7 @@ from ...collate_fns import register_collate_fn
 
 
 @register_dataset(name="imagenet_lmdb", task="classification")
-class ImagenetLMDBDataset(data.Dataset):
+class ImagenetLMDBDataset(BaseImageDataset):
 
     def __init__(
         self,
