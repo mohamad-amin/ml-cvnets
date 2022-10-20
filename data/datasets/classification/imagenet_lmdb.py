@@ -2,6 +2,7 @@
 # For licensing see accompanying LICENSE file.
 # Copyright (C) 2022 Apple Inc. All Rights Reserved.
 #
+import pickle
 
 from torchvision.datasets import ImageFolder
 from typing import Optional, Tuple, Dict, List, Union
@@ -9,7 +10,6 @@ import os
 import torch
 import lmdb
 import six
-import pyarrow as pa
 from PIL import Image
 import argparse
 
@@ -66,9 +66,8 @@ class ImagenetLMDBDataset(BaseImageDataset):
         self.env = lmdb.open(root, subdir=os.path.isdir(root),
                              readonly=True, lock=False, readahead=False, meminit=False)
         with self.env.begin(write=False) as txn:
-            # self.length = txn.stat()['entries'] - 1
-            self.length = pa.deserialize(txn.get(b'__len__'))
-            self.keys = pa.deserialize(txn.get(b'__keys__'))
+            self.length = pickle.loads(txn.get(b'__len__'))
+            self.keys = pickle.loads(txn.get(b'__keys__'))
 
     @classmethod
     def add_arguments(cls, parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -139,11 +138,10 @@ class ImagenetLMDBDataset(BaseImageDataset):
 
     def read_image_lmdb(self, index):
 
-        img, target = None, None
         env = self.env
         with env.begin(write=False) as txn:
             byteflow = txn.get(self.keys[index])
-        unpacked = pa.deserialize(byteflow)
+        unpacked = pickle.loads(byteflow)
 
         # load image
         imgbuf = unpacked[0]
