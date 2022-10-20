@@ -57,7 +57,7 @@ class ImagenetLMDBDataset(BaseImageDataset):
         if getattr(opts, "dataset.cache_images_on_ram", False):
             raise NotImplementedError()
 
-        self.n_classes = len(list(self.class_to_idx.keys()))
+        self.n_classes = 1000  # Todo: figure out a way to fix this
         setattr(opts, "model.classification.n_classes", self.n_classes)
         setattr(opts, "dataset.collate_fn_name_train", "imagenet_collate_fn")
         setattr(opts, "dataset.collate_fn_name_val", "imagenet_collate_fn")
