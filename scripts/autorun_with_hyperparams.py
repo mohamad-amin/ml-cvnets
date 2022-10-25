@@ -204,7 +204,7 @@ if __name__ == '__main__':
         save_config(config, config_path)
         for i in range(args.repetition_num):
             script_path = str(job_path.joinpath('script_{}.sh'.format(i)).absolute())
-            script = qsub_submit_script if args.pbs
+            script = qsub_submit_script
             time_hrs = int(args.cycle_time_in_hours)
             # time_hrs = 8
             script = script.format(
