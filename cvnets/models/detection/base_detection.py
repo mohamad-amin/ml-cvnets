@@ -67,8 +67,6 @@ class BaseDetection(nn.Module):
             weight_decay=weight_decay,
             no_decay_bn_filter_bias=no_decay_bn_filter_bias,
         )
-        logger.info('Here in get trainable params! they are:' + str(param_list))
-        import IPython; IPython.embed()
         return param_list, [1.0] * len(param_list)
 
     @staticmethod
