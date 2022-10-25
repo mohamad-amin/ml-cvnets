@@ -556,7 +556,7 @@ def main(opts, **kwargs):
     width_multiplier_key = getattr(opts, "mup.width_multiplier_key")
 
     def get_model_by_width(w):
-        new_opts = copy.deepcopy.copy(opts)
+        new_opts = copy.deepcopy(opts)
         setattr(new_opts, width_multiplier_key, w)
         new_model = get_model(new_opts)
         new_model = new_model.to(device=device, memory_format=memory_format)
