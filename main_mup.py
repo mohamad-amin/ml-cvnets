@@ -151,16 +151,16 @@ def _record_coords(records, width, modulename, t,
         def get_stat(d, x, fdict):
             if isinstance(x, (tuple, list)):
                 for i, _x in enumerate(x):
-                    _d = copy(d)
+                    _d = copy.copy(d)
                     _d['module'] += f'[{i}]'
                     get_stat(_d, _x, fdict)
             elif isinstance(x, dict):
                 for name, _x in x.items():
-                    _d = copy(d)
+                    _d = copy.copy(d)
                     _d['module'] += f'[{name}]'
                     get_stat(_d, _x, fdict)
             elif isinstance(x, torch.Tensor):
-                _d = copy(d)
+                _d = copy.copy(d)
                 for fname, f in fdict.items():
                     _d[fname] = f(x).item()
                 records.append(_d)
@@ -177,16 +177,16 @@ def _record_coords(records, width, modulename, t,
             # output stats
             if isinstance(output, (tuple, list)):
                 for i, out in enumerate(output):
-                    _ret = copy(ret)
+                    _ret = copy.copy(ret)
                     _ret['module'] += f':out[{i}]'
                     get_stat(_ret, out, output_fdict)
             elif isinstance(output, dict):
                 for name, out in output.items():
-                    _ret = copy(ret)
+                    _ret = copy.copy(ret)
                     _ret['module'] += f':out[{name}]'
                     get_stat(_ret, out, output_fdict)
             elif isinstance(output, torch.Tensor):
-                _ret = copy(ret)
+                _ret = copy.copy(ret)
                 for fname, f in output_fdict.items():
                     _ret[fname] = f(output).item()
                 records.append(_ret)
@@ -197,16 +197,16 @@ def _record_coords(records, width, modulename, t,
             if input_fdict:
                 if isinstance(input, (tuple, list)):
                     for i, out in enumerate(input):
-                        _ret = copy(ret)
+                        _ret = copy.copy(ret)
                         _ret['module'] += f':in[{i}]'
                         get_stat(_ret, out, input_fdict)
                 elif isinstance(input, dict):
                     for name, out in input.items():
-                        _ret = copy(ret)
+                        _ret = copy.copy(ret)
                         _ret['module'] += f':in[{name}]'
                         get_stat(_ret, out, input_fdict)
                 elif isinstance(input, torch.Tensor):
-                    _ret = copy(ret)
+                    _ret = copy.copy(ret)
                     for fname, f in input_fdict.items():
                         _ret[fname] = f(input).item()
                     records.append(_ret)
@@ -216,7 +216,7 @@ def _record_coords(records, width, modulename, t,
             # param stats
             if param_fdict:
                 for name, p in module.named_parameters():
-                    _ret = copy(ret)
+                    _ret = copy.copy(ret)
                     _ret['module'] += f':param[{name}]'
                     for fname, f in param_fdict.items():
                         _ret[fname] = f(p).item()
@@ -334,7 +334,6 @@ def _get_coord_data(models, dataloader, optcls, nsteps=3,
                     data, target = data.cuda(), target.cuda()
                 if flatten_input:
                     data = data.view(data.size(0), -1)
-                import IPython; IPython.embed()
                 output = model(data)
                 if flatten_output:
                     output = output.view(-1, output.shape[-1])
@@ -557,7 +556,7 @@ def main(opts, **kwargs):
     width_multiplier_key = getattr(opts, "mup.width_multiplier_key")
 
     def get_model_by_width(w):
-        new_opts = copy.deepcopy(opts)
+        new_opts = copy.deepcopy.copy(opts)
         setattr(new_opts, width_multiplier_key, w)
         new_model = get_model(new_opts)
         new_model = new_model.to(device=device, memory_format=memory_format)
