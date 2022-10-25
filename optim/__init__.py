@@ -38,7 +38,7 @@ def build_optimizer(model: torch.nn.Module, opts) -> BaseOptim:
     weight_decay = getattr(opts, "optim.weight_decay", 0.0)
     no_decay_bn_filter_bias = getattr(opts, "optim.no_decay_bn_filter_bias", False)
 
-    for _ in range(5): print('Gonna get params');
+    logger.info('Gonna get params. Model has module? {}'.format(hasattr(model, "module")))
 
     if hasattr(model, "module"):
         model_params, lr_mult = model.module.get_trainable_parameters(
