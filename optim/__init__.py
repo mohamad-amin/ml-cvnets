@@ -7,7 +7,6 @@ import os
 import importlib
 
 import torch.nn
-from mup import MuSGD, MuAdam, MuAdamW
 
 from utils import logger
 import argparse
@@ -51,8 +50,7 @@ def build_optimizer(model: torch.nn.Module, opts) -> BaseOptim:
     is_mup = getattr(opts, "optim.mup", False)
     if optim_name in OPTIM_REGISTRY:
         if is_mup:
-            if optim_name == "sgd":
-                optim = MuSGD()
+            raise NotImplementedError()
         else:
             optimizer = OPTIM_REGISTRY[optim_name](opts, model_params)
     else:
