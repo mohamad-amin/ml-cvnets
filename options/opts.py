@@ -13,7 +13,7 @@ from data.datasets import arguments_dataset
 from cvnets import arguments_model, arguments_nn_layers, arguments_ema
 from cvnets.anchor_generator import arguments_anchor_gen
 from loss_fn import arguments_loss_fn
-from optim import arguments_optimizer
+from optim import arguments_optimizer, arguments_mup
 from optim.scheduler import arguments_scheduler
 from common import SUPPORTED_MODALITIES
 from data.transforms import arguments_augmentation
@@ -290,6 +290,9 @@ def get_training_arguments(parse_args: Optional[bool] = True):
 
     # common
     parser = arguments_common(parser=parser)
+
+    # mup
+    parser = arguments_mup(parser=parser)
 
     if parse_args:
         # parse args

@@ -189,6 +189,8 @@ class ResNet(BaseEncoder):
             title="".format(cls.__name__), description="".format(cls.__name__)
         )
         group.add_argument("--model.classification.resnet.depth", type=int, default=50)
+        group.add_argument("--model.classification.resnet.growth_factor", type=int, default=2)
+        group.add_argument("--model.classification.resnet.width_multiplier", type=int, default=1)
         group.add_argument(
             "--model.classification.resnet.dropout",
             type=float,

@@ -74,6 +74,7 @@ def general_optim_args(parser: argparse.ArgumentParser) -> argparse.ArgumentPars
     group = parser.add_argument_group("optimizer", "Optimizer related arguments")
     group.add_argument("--optim.name", default="sgd", help="Which optimizer")
     group.add_argument("--optim.eps", type=float, default=1e-8, help="Optimizer eps")
+    group.add_argument("--optim.mup", action="store_true", help="Optimizer using MuP")
     group.add_argument(
         "--optim.weight-decay", default=4e-5, type=float, help="Weight decay"
     )
@@ -92,6 +93,15 @@ def arguments_optimizer(parser: argparse.ArgumentParser) -> argparse.ArgumentPar
     for k, v in OPTIM_REGISTRY.items():
         parser = v.add_arguments(parser=parser)
 
+    return parser
+
+
+def arguments_mup(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    group = parser.add_argument_group("mup", "MuP related arguments")
+    group.add_argument("--mup.width_multiplier_key")
+    group.add_argument("--mup.save_base_shapes", type=str, default=None)
+    group.add_argument("--mup.load_base_shapes", type=str, default=None)
+    group.add_argument("--mup.coord_check_dir", type=str, default='/tmp/coord_checks')
     return parser
 
 
