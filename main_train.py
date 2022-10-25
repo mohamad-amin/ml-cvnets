@@ -99,7 +99,11 @@ def main(opts, **kwargs):
 
     load_base_shapes = getattr(opts, "mup.load_base_shapes", False)
     if load_base_shapes:
+        logger.info('Using MuP parameterization!')
         set_base_shapes(model, load_base_shapes)
+    else:
+        logger.info('Using Standard parameterization!')
+        set_base_shapes(model, None)
 
     # setup criteria
     criteria = build_loss_fn(opts)
