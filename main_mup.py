@@ -334,6 +334,7 @@ def _get_coord_data(models, dataloader, optcls, nsteps=3,
                     data, target = data.cuda(), target.cuda()
                 if flatten_input:
                     data = data.view(data.size(0), -1)
+                import IPython; IPython.embed()
                 output = model(data)
                 if flatten_output:
                     output = output.view(-1, output.shape[-1])
