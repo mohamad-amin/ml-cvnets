@@ -7,6 +7,7 @@ import os
 import importlib
 
 import torch.nn
+from mup import MuSGD, MuAdam, MuAdamW
 
 from utils import logger
 import argparse
@@ -47,8 +48,13 @@ def build_optimizer(model: torch.nn.Module, opts) -> BaseOptim:
             weight_decay=weight_decay, no_decay_bn_filter_bias=no_decay_bn_filter_bias
         )
     setattr(opts, "optim.lr_multipliers", lr_mult)
+    is_mup = getattr(opts, "optim.mup", False)
     if optim_name in OPTIM_REGISTRY:
-        optimizer = OPTIM_REGISTRY[optim_name](opts, model_params)
+        if is_mup:
+            if optim_name == "sgd":
+                optim = MuSGD()
+        else:
+            optimizer = OPTIM_REGISTRY[optim_name](opts, model_params)
     else:
         supp_list = list(OPTIM_REGISTRY.keys())
         supp_str = (

@@ -6,6 +6,7 @@
 from torch import nn
 import argparse
 from typing import Tuple, Dict
+from mup import MuReadout
 
 from . import register_cls_models
 from .base_cls import BaseEncoder
@@ -112,6 +113,10 @@ class ResNet(BaseEncoder):
             module=LinearLayer(
                 in_features=input_channels, out_features=num_classes, bias=True
             ),
+        )
+        self.classifier.add_module(
+            name="classifier_fc",
+            module=MuReadout(input_channels, num_classes, readout_zero_init=True)
         )
 
         self.model_conf_dict["cls"] = {"in": input_channels, "out": num_classes}

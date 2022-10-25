@@ -9,6 +9,7 @@ import math
 from torch.cuda.amp import GradScaler
 from torch.distributed.elastic.multiprocessing import errors
 import cv2
+from mup import set_base_shapes
 
 from utils import logger
 from options.opts import get_training_arguments
@@ -95,6 +96,10 @@ def main(opts, **kwargs):
         model = model.to(device=device)
         if is_master_node:
             logger.log("Using DataParallel for training")
+
+    load_base_shapes = getattr(opts, "mup.load_base_shapes", False)
+    if load_base_shapes:
+        set_base_shapes(model, load_base_shapes)
 
     # setup criteria
     criteria = build_loss_fn(opts)

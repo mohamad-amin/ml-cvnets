@@ -5,6 +5,7 @@
 
 from torch import nn
 from typing import Optional
+from mup import MuReadout
 
 from utils import logger
 
@@ -17,6 +18,7 @@ supported_conv_inits = [
     "xavier_uniform",
     "normal",
     "trunc_normal",
+    "mup"
 ]
 supported_fc_inits = [
     "kaiming_normal",
@@ -67,6 +69,11 @@ def _init_nn_layers(
         if module.weight is not None:
             std = 1.0 / module.weight.size(1) if std_val is None else std_val
             nn.init.trunc_normal_(module.weight, mean=0.0, std=std)
+        if module.bias is not None:
+            nn.init.zeros_(module.bias)
+    elif init_method == "mup":
+        if module.weight is not None:
+            nn.init.kaiming_normal_(module.weight, a=1)
         if module.bias is not None:
             nn.init.zeros_(module.bias)
     else:
@@ -125,6 +132,8 @@ def initialize_weights(opts, modules) -> None:
                 )
             elif isinstance(m, norm_layers_tuple):
                 initialize_norm_layers(module=m)
+            elif isinstance(m, MuReadout):
+                pass  # it's self-initializing
             elif isinstance(m, (nn.Linear, LinearLayer)):
                 initialize_fc_layer(
                     module=m, init_method=linear_init_type, std_val=linear_std
@@ -140,6 +149,8 @@ def initialize_weights(opts, modules) -> None:
             )
         elif isinstance(modules, norm_layers_tuple):
             initialize_norm_layers(module=modules)
+        elif isinstance(modules, MuReadout):
+            pass  # it's self-initializing
         elif isinstance(modules, (nn.Linear, LinearLayer)):
             initialize_fc_layer(
                 module=modules, init_method=linear_init_type, std_val=linear_std

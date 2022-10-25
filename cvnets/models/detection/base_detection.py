@@ -67,6 +67,8 @@ class BaseDetection(nn.Module):
             weight_decay=weight_decay,
             no_decay_bn_filter_bias=no_decay_bn_filter_bias,
         )
+        # Todo: change  the LR multiplier based on MuP
+        import IPython; IPython.embed()
         return param_list, [1.0] * len(param_list)
 
     @staticmethod
