@@ -168,8 +168,10 @@ class BaseEncoder(nn.Module):
             no_decay_bn_filter_bias=no_decay_bn_filter_bias,
         )
         logger.info('Here in get trainable params! they are:' + str(param_list))
-        import IPython; IPython.embed()
-        return param_list, [1.0] * len(param_list)
+        if 'mup_like' in kwargs and kwargs['mup_like'] is not None:
+            return kwargs['mup_like'](param_list)
+        else:
+            return param_list, [1.0] * len(param_list)
 
     @staticmethod
     def _profile_layers(

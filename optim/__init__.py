@@ -12,6 +12,7 @@ from utils import logger
 import argparse
 
 from .base_optim import BaseOptim
+from .mup import get_muadam_param_groups, get_musgd_param_groups
 
 OPTIM_REGISTRY = {}
 
@@ -38,21 +39,23 @@ def build_optimizer(model: torch.nn.Module, opts) -> BaseOptim:
     weight_decay = getattr(opts, "optim.weight_decay", 0.0)
     no_decay_bn_filter_bias = getattr(opts, "optim.no_decay_bn_filter_bias", False)
 
+    is_mup = getattr(opts, "optim.mup", False)
+    if is_mup:
+        mup_like_f = get_musgd_param_groups if optim_name in ['sgd'] else get_muadam_param_groups
+    else:
+        mup_like_f = None
+
     if hasattr(model, "module"):
         model_params, lr_mult = model.module.get_trainable_parameters(
-            weight_decay=weight_decay, no_decay_bn_filter_bias=no_decay_bn_filter_bias
+            weight_decay=weight_decay, no_decay_bn_filter_bias=no_decay_bn_filter_bias, mup_like=mup_like_f
         )
     else:
         model_params, lr_mult = model.get_trainable_parameters(
-            weight_decay=weight_decay, no_decay_bn_filter_bias=no_decay_bn_filter_bias
+            weight_decay=weight_decay, no_decay_bn_filter_bias=no_decay_bn_filter_bias, mup_like=mup_like_f
         )
     setattr(opts, "optim.lr_multipliers", lr_mult)
-    is_mup = getattr(opts, "optim.mup", False)
     if optim_name in OPTIM_REGISTRY:
-        if is_mup:
-            raise NotImplementedError()
-        else:
-            optimizer = OPTIM_REGISTRY[optim_name](opts, model_params)
+        optimizer = OPTIM_REGISTRY[optim_name](opts, model_params)
     else:
         supp_list = list(OPTIM_REGISTRY.keys())
         supp_str = (
