@@ -503,6 +503,8 @@ def coord_check(mup, trainloader, optimizer, get_model, base_shapes, plotdir='',
     models = {w: gen(w, standparam=not mup) for w in widths}
     df = get_coord_data(models, trainloader, mup=mup, lr=0.1, optimizer=optimizer, nseeds=3, nsteps=5, dict_in_out=True)
 
+    import IPython; IPython.embed()
+
     prm = 'μP' if mup else 'SP'
     plot_coord_data(df, legend=legend,
         save_to=os.path.join(plotdir, f'{prm.lower()}_{optimizer}_coord.png'),
