@@ -37,11 +37,11 @@ export JAX_ENABLE_X64=True
 
 mkdir /tmp/imagenet_{unique_id}/
 cd /tmp/imagenet_{unique_id}/
-systemd-run --scope -p MemoryMax=60G --user cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* .
+systemd-run --scope -p MemoryMax=60G --user `cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* .`
 rm valprep.sh
-systemd-run --scope -p MemoryMax=60G --user ./extract.bsh
-rm -rf imagenet/train/ILSVRC2012_img_train
-rm imagenet/val/ILSVRC2012_img_val.tar
+systemd-run --scope -p MemoryMax=60G --user `./extract.bsh`
+systemd-run --scope -p MemoryMax=60G --user `rm -rf imagenet/train/ILSVRC2012_img_train`
+systemd-run --scope -p MemoryMax=60G --user `rm imagenet/val/ILSVRC2012_img_val.tar`
 
 cd $PBS_O_WORKDIR
 
