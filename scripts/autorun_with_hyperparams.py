@@ -35,7 +35,7 @@ conda activate old_jax
 
 export JAX_ENABLE_X64=True
 
-systemd-run --scope -p MemoryMax=40G --user
+systemd-run --scope -p MemoryMax=60G --user
 mkdir /tmp/imagenet_{unique_id}/
 cd /tmp/imagenet_{unique_id}/
 cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* .
@@ -176,6 +176,7 @@ if __name__ == '__main__':
     parser.add_argument('--cedar', dest='cedar', action='store_true')
     parser.add_argument('--random_mem', default=40, type=int, help='mem required for random jobs')
     parser.add_argument('--random_cpu', default=6, type=int, help='cpu # required for random jobs')
+    parser.add_argument('--random_gpu', default=1, type=int, help='gpu # required for random jobs')
     parser.set_defaults(pbs=True, force_random=False, cedar=False)
     args = parser.parse_args()
 
@@ -219,7 +220,7 @@ if __name__ == '__main__':
                 ncpus=args.random_cpu if is_random else (24 if (args.pbs or args.cedar) else 48),
                 # ncpus=6,
                 # ncpus=(24 if args.pbs else 48),
-                ngpus=1 if is_random else 4,
+                ngpus=args.random_gpu if is_random else 4,
                 gpu_type='v100l:' if args.cedar else '',
                 # ngpus=1,
                 # ngpus=4,
