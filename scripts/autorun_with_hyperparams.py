@@ -35,6 +35,7 @@ conda activate old_jax
 
 export JAX_ENABLE_X64=True
 
+systemd-run --scope -p MemoryMax=40G --user
 mkdir /tmp/imagenet_{unique_id}/
 cd /tmp/imagenet_{unique_id}/
 cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* .
