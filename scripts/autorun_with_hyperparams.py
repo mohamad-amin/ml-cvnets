@@ -8,7 +8,7 @@ from pathlib import Path
 from copy import deepcopy
 from datetime import date
 
-qsub_submit_script = f'''#!/bin/bash
+qsub_submit_script = '''#!/bin/bash
 
 #PBS -l walltime={walltime}:00:00,select=1:ncpus={ncpus}:ngpus={ngpus}:gpu_mem={gpu_mem}:mem={mem}
 #PBS -N {job_index}.{name}
