@@ -38,11 +38,15 @@ export JAX_ENABLE_X64=True
 rm -rf /tmp/*
 mkdir /tmp/imagenet_{unique_id}/
 cd /tmp/imagenet_{unique_id}/
-systemd-run --scope -p MemoryMax=60G --user `cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* /tmp/imagenet_{unique_id}/`
+# systemd-run --scope -p MemoryMax=60G --user `cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* /tmp/imagenet_{unique_id}/`
+cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* /tmp/imagenet_{unique_id}/
 rm valprep.sh
-systemd-run --scope -p MemoryMax=60G --user `/tmp/imagenet_{unique_id}/extract.bsh`
-systemd-run --scope -p MemoryMax=60G --user `rm -rf /tmp/imagenet_{unique_id}/imagenet/train/ILSVRC2012_img_train`
-systemd-run --scope -p MemoryMax=60G --user `rm /tmp/imagenet_{unique_id}/imagenet/val/ILSVRC2012_img_val.tar`
+# systemd-run --scope -p MemoryMax=60G --user `/tmp/imagenet_{unique_id}/extract.bsh`
+./extract.bsh
+# systemd-run --scope -p MemoryMax=60G --user `rm -rf /tmp/imagenet_{unique_id}/imagenet/train/ILSVRC2012_img_train`
+rm -rf /tmp/imagenet_{unique_id}/imagenet/train/ILSVRC2012_img_train
+# systemd-run --scope -p MemoryMax=60G --user `rm /tmp/imagenet_{unique_id}/imagenet/val/ILSVRC2012_img_val.tar`
+rm /tmp/imagenet_{unique_id}/imagenet/val/ILSVRC2012_img_val.tar
 
 cd $PBS_O_WORKDIR
 
