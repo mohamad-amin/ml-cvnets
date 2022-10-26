@@ -1,4 +1,5 @@
 import math
+import random
 
 import yaml
 import argparse
@@ -7,7 +8,7 @@ from pathlib import Path
 from copy import deepcopy
 from datetime import date
 
-qsub_submit_script = '''#!/bin/bash
+qsub_submit_script = f'''#!/bin/bash
 
 #PBS -l walltime={walltime}:00:00,select=1:ncpus={ncpus}:ngpus={ngpus}:gpu_mem={gpu_mem}:mem={mem}
 #PBS -N {job_index}.{name}
@@ -34,8 +35,8 @@ conda activate old_jax
 
 export JAX_ENABLE_X64=True
 
-mkdir /tmp/imagenet/
-cd /tmp/imagenet/
+mkdir /tmp/imagenet_{unique_id}/
+cd /tmp/imagenet_{unique_id}/
 cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* .
 rm valprep.sh
 ./extract.bsh
@@ -186,8 +187,10 @@ if __name__ == '__main__':
     path = Path(root_path)
     path.mkdir(parents=True)
 
+    unique_id = random.randint(0, 9999999)
     for config, explanation in new_configs:
 
+        unique_id += 1
         name = construct_task_name(explanation)  # todo: should not result in same thing for different configs
         job_path = path.joinpath(name)
         job_path.mkdir()
@@ -201,6 +204,8 @@ if __name__ == '__main__':
             is_random = True
         else:
             is_random = False
+        config['dataset']['root_train'] = '/tmp/imagenet_{}/imagenet/train'.format(unique_id)
+        config['dataset']['root_val'] = '/tmp/imagenet_{}/imagenet/val'.format(unique_id)
         save_config(config, config_path)
         for i in range(args.repetition_num):
             script_path = str(job_path.joinpath('script_{}.sh'.format(i)).absolute())
@@ -229,6 +234,7 @@ if __name__ == '__main__':
                 run_dir=str(job_path.absolute()),
                 name=name,
                 job_index=i,
+                unique_id=unique_id
             )
             with open(script_path, 'w') as f:
                 f.write(script)
