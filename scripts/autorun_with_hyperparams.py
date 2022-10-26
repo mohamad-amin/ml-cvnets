@@ -35,12 +35,11 @@ conda activate old_jax
 
 export JAX_ENABLE_X64=True
 
-systemd-run --scope -p MemoryMax=60G --user
 mkdir /tmp/imagenet_{unique_id}/
 cd /tmp/imagenet_{unique_id}/
-cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* .
+systemd-run --scope -p MemoryMax=60G --user cp /scratch/st-dsuth-1/amin/datasets/imagenet_zips/* .
 rm valprep.sh
-./extract.bsh
+systemd-run --scope -p MemoryMax=60G --user ./extract.bsh
 rm -rf imagenet/train/ILSVRC2012_img_train
 rm imagenet/val/ILSVRC2012_img_val.tar
 
