@@ -35,7 +35,6 @@ conda activate old_jax
 
 export JAX_ENABLE_X64=True
 
-# find /tmp -maxdepth 1 ! \( -name "*py*" -o -name "*imagenet*" -o -name "*pbs*" \) -exec rm -rf {} +
 rm -rf /tmp/*
 mkdir /tmp/imagenet_{unique_id}/
 cd /tmp/imagenet_{unique_id}/
@@ -53,6 +52,7 @@ cd $PBS_O_WORKDIR
 
 python main_train.py --common.config-file {config_path} --common.results-loc {run_dir}/run_{job_index}/
 '''
+
 
 def load_config(config_path):
     with open(config_path) as file:
