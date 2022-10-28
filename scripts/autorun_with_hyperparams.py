@@ -35,6 +35,7 @@ conda activate old_jax
 
 export JAX_ENABLE_X64=True
 
+# find /tmp -maxdepth 1 ! \( -name "*py*" -o -name "*imagenet*" -o -name "*pbs*" \) -exec rm -rf {} +
 rm -rf /tmp/*
 mkdir /tmp/imagenet_{unique_id}/
 cd /tmp/imagenet_{unique_id}/
@@ -152,6 +153,9 @@ def construct_task_name(explanation):
 
     if 'scheduler_--_cosine_--_min_lr' in explanation:
         name += extract_query('scheduler_--_cosine_--_min_lr', addition='ilr')
+
+    if 'dataset_--_train_batch_size0' in explanation:
+        name += extract_query('dataset_--_train_batch_size0', addition='bs')
 
     if 'common_--_seed' in explanation:
         name += extract_query('common_--_seed', addition='seed')  # seed
